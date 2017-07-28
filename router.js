@@ -7,24 +7,24 @@ var Router = {
 		return this;
 	},
 	getURL: function() { // get's current query string/hash & clears slashes from beginning and end, Note: only for initial load
-		var fragment = '';
-		fragment = window.location.search.replace(/&wrapper_nonce=([A-Za-z0-9]+)/, "").replace(/\?\//, '');
+		var url = '';
+		url = window.location.search.replace(/&wrapper_nonce=([A-Za-z0-9]+)/, "").replace(/\?\//, '');
 		return this.clearSlashes(fragment);
 	},
 	clearSlashes: function(path) {
 		return path.toString().replace(/\/$/, '').replace(/^\//, '');
 	},
-	add: function(re, handler) {
-		if (typeof re == 'function') {
-			handler = re;
-			re = '';
+	add: function(path, controller) {
+		if (typeof path == 'function') {
+			controller = path;
+			path = '';
 		}
-		this.routes.push({ re: re, handler: handler });
+		this.routes.push({ path: path, controller: controller });
 		return this;
 	},
 	remove: function(param) {
 		for (var i = 0, r; i < this.routes.length, r = this.routes[i]; i++) {
-			if (r.handler === param || r.re.toString() === param.toString()) {
+			if (r.controller === param || r.path.toString() === param.toString()) {
 				this.routes.splice(i, 1);
 				return this;
 			}
@@ -39,11 +39,11 @@ var Router = {
 	check: function(f) {
 		var fragment = f || this.getURL();
 		for (var i = 0; i < this.routes.length; i++) {
-			var match = fragment.match(this.routes[i].re);
+			var match = fragment.match(this.routes[i].path);
 			if (match) {
 				match.shift();
 				this.currentRoute = f;
-				this.routes[i].handler.apply({}, match);
+				this.routes[i].controller.apply({}, match);
 				return this;
 			}
 		}
