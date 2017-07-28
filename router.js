@@ -6,7 +6,7 @@ var Router = {
 		this.root = options && options.root ? '/' + this.clearSlashes(options.root) + '/' : '/';
 		return this;
 	},
-	getFragment: function() { // get's current query string/hash & clears slashes from beginning and end, Note: only for initial load
+	getURL: function() { // get's current query string/hash & clears slashes from beginning and end, Note: only for initial load
 		var fragment = '';
 		fragment = window.location.search.replace(/&wrapper_nonce=([A-Za-z0-9]+)/, "").replace(/\?\//, '');
 		return this.clearSlashes(fragment);
@@ -37,7 +37,7 @@ var Router = {
 		return this;
 	},
 	check: function(f) {
-		var fragment = f || this.getFragment();
+		var fragment = f || this.getURL();
 		for (var i = 0; i < this.routes.length; i++) {
 			var match = fragment.match(this.routes[i].re);
 			if (match) {
@@ -71,7 +71,7 @@ var Router = {
 
 // Note: Call right after creating all of your routes.
 Router.init = function() {
-	Router.check(Router.getFragment());
+	Router.check(Router.getURL());
 }
 
 /* Example Ussage
