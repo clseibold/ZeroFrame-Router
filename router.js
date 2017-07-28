@@ -9,7 +9,7 @@ var Router = {
 	getURL: function() { // get's current query string/hash & clears slashes from beginning and end, Note: only for initial load
 		var url = '';
 		url = window.location.search.replace(/&wrapper_nonce=([A-Za-z0-9]+)/, "").replace(/\?\//, '');
-		return this.clearSlashes(fragment);
+		return this.clearSlashes(url);
 	},
 	clearSlashes: function(path) {
 		return path.toString().replace(/\/$/, '').replace(/^\//, '');
