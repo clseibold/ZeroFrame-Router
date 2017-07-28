@@ -2,7 +2,7 @@
 A *very* basic router that works with the ZeroFrame API.
 
 ## Example Usage
-```
+```javascript
 Router.add(/about/, function () {
     console.log('about');
 }).add(/tutorials/, function() {
