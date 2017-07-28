@@ -37,9 +37,9 @@ var Router = {
 		return this;
 	},
 	check: function(f) {
-		var fragment = f || this.getURL();
+		var url = f || this.getURL();
 		for (var i = 0; i < this.routes.length; i++) {
-			var match = fragment.match(this.routes[i].path);
+			var match = url.match(this.routes[i].path);
 			if (match) {
 				match.shift();
 				this.currentRoute = f;
