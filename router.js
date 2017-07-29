@@ -48,9 +48,9 @@ var Router = {
 				match.forEach(function (value, i) {
 					routeParams[keys[i].replace(":", "")] = value;
 				});
-				//doAll(this.routes[i].path);
-				if (this.hooks) {
+				if (this.hooks) { // TODO: Move this into navigate function?
 					if (this.hooks["before"] && !this.hooks["before"].call({}, this.routes[i].path, routeParams)) {
+						page.cmd('wrapperPushState', [{"route": this.currentRoute}, null, this.root + this.clearSlashes(this.currentRoute)]);
 						return this;
 					}
 				}
