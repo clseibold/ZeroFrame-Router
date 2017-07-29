@@ -20,3 +20,6 @@ Router.init();
 To navigate to a route, use the `Router.navigate('/route')` function.
 
 *Note*: You must also call `Router.listenForBack()` in the `OnRequest()` function of your ZeroFrame class. This will detect when the user hits the back button and navigate to the correct route.
+
+
+*Credit*: Library based on code from this tutorial: [http://krasimirtsonev.com/blog/article/A-modern-JavaScript-router-in-100-lines-history-api-pushState-hash-url](http://krasimirtsonev.com/blog/article/A-modern-JavaScript-router-in-100-lines-history-api-pushState-hash-url)
