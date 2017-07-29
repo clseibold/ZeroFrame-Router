@@ -25,7 +25,7 @@ To navigate to a route, use the `Router.navigate('/route')` function.
 *Credit*: Library based on code from this tutorial: [http://krasimirtsonev.com/blog/article/A-modern-JavaScript-router-in-100-lines-history-api-pushState-hash-url](http://krasimirtsonev.com/blog/article/A-modern-JavaScript-router-in-100-lines-history-api-pushState-hash-url)
 
 ## Router Link Vue Component
-If you wan't to be able to easily create links that navigate to a router without having to type out a call to a function, you can use this vue component. Simply include the js file, after the vue js file AND router.js file, and use as such:
+If you wan't to be able to easily create links that navigate to a route without having to type out a call to a function, you can use this vue component. Simply include the js file, after the vue js file AND `router.js` file, and use as such:
 
 ```html
 <route-link to="/">Home</route-link>
