@@ -2,7 +2,7 @@ var Router = {
 	routes: [],
 	currentRoute: '',
 	root: '/',
-	doAll: null, // Function called for every route, BEFORE it's controller function is called
+	hooks: null, // hooks that are called for each route, functions for 'before' and 'after'.
 	config: function(options) {
 		this.root = options && options.root ? '/' + this.clearSlashes(options.root) + '/' : '/';
 		return this;
@@ -48,9 +48,19 @@ var Router = {
 				match.forEach(function (value, i) {
 					routeParams[keys[i].replace(":", "")] = value;
 				});
+				//doAll(this.routes[i].path);
+				if (this.hooks) {
+					if (this.hooks["before"] && !this.hooks["before"].call({}, this.routes[i].path, routeParams)) {
+						return this;
+					}
+				}
 				this.currentRoute = this.routes[i].path;
-				doAll(this.currentRoute);
 				this.routes[i].controller.call({}, routeParams);
+				if (this.hooks) {
+					if (this.hooks["after"]) {
+						this.hooks["after"].call({}, this.currentRoute, routeParams);
+					}
+				}
 				return this;
 			}
 		}
@@ -78,10 +88,8 @@ var Router = {
 		this.check(path);
 		return this;
 	},
-	all: function(f) { // Sets the 'doAll' function, which is called before each route's controller function
-		if (typeof f === 'function') {
-			doAll = f;
-		}
+	hooks: function(hooks) {
+		this.hooks = hooks;
 	}
 }
 
