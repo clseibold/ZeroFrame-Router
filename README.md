@@ -15,6 +15,18 @@ Router.add('about', function () {
     console.log('Wildcard example');
 }).add(function() {
     console.log('home');
+}).all(function(currentRoute) {
+    // Called for every route, BEFORE the controller function is called (the one passed in when you added the route).
+    // It gives you the current route that you can check with. You could also have just used 'Router.currentRoute'.
+    
+    var refreshBtn = document.getElementById('refreshBtn');
+    if (currentRoute == 'tutorials') {
+        // Show refresh button when on tutorials route
+        refreshBtn.style.display = 'inline';
+    } else {
+        // Hide the refresh button for all other routes
+        refreshBtn.style.display = 'none';
+    }
 });
 Router.init();
 ```

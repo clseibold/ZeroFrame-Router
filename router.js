@@ -2,6 +2,7 @@ var Router = {
 	routes: [],
 	currentRoute: '',
 	root: '/',
+	doAll: null, // Function called for every route, BEFORE it's controller function is called
 	config: function(options) {
 		this.root = options && options.root ? '/' + this.clearSlashes(options.root) + '/' : '/';
 		return this;
@@ -47,6 +48,8 @@ var Router = {
 				match.forEach(function (value, i) {
 					routeParams[keys[i].replace(":", "")] = value;
 				});
+				this.currentRoute = this.routes[i].path;
+				doAll(this.currentRoute);
 				this.routes[i].controller.call({}, routeParams);
 				return this;
 			}
@@ -70,6 +73,11 @@ var Router = {
 		page.cmd('wrapperPushState', [{"route": path}, null, this.root + this.clearSlashes(path)]);
 		this.check(path);
 		return this;
+	},
+	all: function(f) { // Sets the 'doAll' function, which is called before each route's controller function
+		if (typeof f === 'function') {
+			doAll = f;
+		}
 	}
 }
 
