@@ -40,7 +40,7 @@ Router.hooks({
 Router.init();
 ```
 
-To navigate to a route, use the `Router.navigate('/route')` function. **You must also make sure your ZeroFrame instance is called `page`.**
+To navigate to a route, use the `Router.navigate('/route')` function. **You must also make sure your ZeroFrame instance is called `page`.** (you can get around this by doing something as simple as `page = zeroframe;`).
 
 The order in which you add routes matters. The URL which is added earlier and matches will be the one that is called.
 
