@@ -56,6 +56,10 @@ var Router = {
 		}
 		return this;
 	},
+	refresh: function() { // Refreshes the current route - reruns the route's controller function
+		this.check(this.currentRoute);
+		return this;
+	},
 	listenForBack: function(cmd, message) { // Note: Call in the OnRequest function in ZeroFrame class.
 		if (!cmd) console.log("[Router] Please pass in cmd and message into Router.listenForBack function");
 		if (cmd == "wrapperPopState") {
