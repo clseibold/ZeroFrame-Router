@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+ <title>New ZeroNet site!</title>
+ <meta charset="utf-8">
+ <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+ <base href="" target="_top" id="base">
+ <script>
+ 	base.href = document.location.href.replace("/media", "").replace("index.html", "").replace(/[&?]wrapper=False/, "").replace(/[&?]wrapper_nonce=[A-Za-z0-9]+/, "");
+
+ 	function toggleClass(element, className) {
+ 	    if (hasClass(element, className)) {
+ 	        element.className = element.className.replace(new RegExp('(?:^|\\s)' + className + '(?:\\s|$)'), '');
+ 	    } else {
+ 	        element.className += " " + className;
+ 	    }
+ 	}
+
+ 	function hasClass(element, cls) {
+ 	    return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
+ 	}
+ </script>
+
+ <style>
+ 	a {
+ 		cursor: pointer;
+ 		color: blue;
+ 		margin-right: 10px;
+ 		padding: 7px;
+ 		padding-left: 10px;
+ 		padding-right: 10px;
+ 		margin-bottom: 15px;
+ 		text-decoration: none;
+ 	}
+ 	a:hover {
+ 		color: #000033;
+ 	}
+ 	#menu a:hover, a.button-link:hover,
+ 	#menu a.active {
+ 		color: #000033;
+ 		background: #AAAAAA;
+ 		border-radius: 2px;
+ 	}
+ 	pre.code, div.code, span.code {
+ 		background: #DDDDDD;
+ 		border: 1px solid #BBBBBB;
+ 		padding: 10px;
+ 		display: inline-block;
+ 		border-radius: 2px;
+ 	}
+ 	span.code {
+ 		padding: 2px;
+ 		padding-left: 5px;
+ 		padding-right: 5px;
+ 		margin-left: 2px;
+ 		margin-right: 2px;
+ 		background: #EEEEEE;
+ 		border-color: #DDDDDD;
+ 	}
+ </style>
+</head>
+<body>
+	<div id="menu">
+		<a onclick="Router.navigate('');">Home</a>
+		<a onclick="Router.navigate('/about');">About</a>
+		<a onclick="Router.navigate('/siteInfo');">SiteInfo</a>
+		<a id="refreshBtn" onclick="Router.refresh();">Refresh</a>
+		<span style="font-size: 20px; margin-left: 100px;">ZeroFrame Router Example</span>
+	</div>
+	<hr>
+	<div id="out" style="margin-top: 20px;"></div>
+
+	<script type="text/javascript" src="js/ZeroFrame.js"></script>
+	<script type="text/javascript" src="js/router.js"></script>
+
+	<script>
+	var siteInfo = "";
+	var refreshButton = document.getElementById('refreshBtn');
+	class Page extends ZeroFrame {
+		setSiteInfo(site_info) {
+			//var out = document.getElementById("out")
+			siteInfo =
+				"Page address: " + site_info.address +
+				"<br>- Peers: " + site_info.peers +
+				"<br>- Size: " + site_info.settings.size +
+				"<br>- Modified: " + (new Date(site_info.content.modified*1000));
+			Router.refresh();
+		}
+
+		onOpenWebsocket() {
+			this.cmd("siteInfo", [], function(site_info) {
+				page.setSiteInfo(site_info)
+
+				var out = document.getElementById("out");
+				out.innerHTML = "Test";
+				Router.add('about', function() {
+					out.innerHTML = "About";
+				}).add('siteInfo', function() {
+					console.log("route resolving");
+					out.innerHTML = siteInfo;
+				}).add(function() {
+					out.innerHTML = "\
+						ZeroFrame Router<br><br>\
+						A very basic router that works with the ZeroFrame API.<br><br>\
+						Example Usage<br>\
+						<pre class='code'>\
+Router.add('about', function () {<br>\
+    console.log('about');<br>\
+}).add('tutorials', function() {<br>\
+    console.log('tutorials')<br>\
+}).add('products/:pid/edit/:eid', function(params) {<br>\
+    console.log('products', params.pid, params.eid);<br>\
+    // If you go to route: /products/21/edit/3<br>\
+    // It will log: products 21 3<br>\
+}).add('*/create', function() {<br>\
+    console.log('Wildcard example');<br>\
+}).add(function() {<br>\
+    console.log('home');<br>\
+});<br>\
+Router.init();\
+						</pre><br>\
+						To navigate to a route, use the <span class='code'>Router.navigate('/route')</span> function.<br>\
+						<strong>You must also make sure your ZeroFrame instance is called page.</strong><br><br>\
+						<em>Note:</em> You must also call <span class='code'>Router.listenForBack()</span> in the <span class='code'>OnRequest()</span><br>\
+						function of your ZeroFrame class. This will detect when the user hits the<br>\
+						back button and navigate to the correct route.<br><br>\
+						<a href='js/router.js' class='button-link' download>Download router.js File</a>\
+						<a href='https://github.com/krixano/ZeroFrame-Router'>Github Link</a>";
+				}).notFound(function (params) {
+					out.innerHTML = "Page Not Found";
+				});
+
+				console.log(Router.notFoundFunction);
+
+				// These hooks run on every route.
+				Router.hooks({
+					before: function(currentRoute, params) {
+						console.log('before route resolves');
+						if (currentRoute == 'siteInfo') {
+							refreshBtn.style.display = 'inline';
+						} else if (currentRoute == 'about') {
+							return false;
+						} else {
+							refreshBtn.style.display = 'none';
+						}
+						return true; // Continue on to resolving the route
+					},
+					after: function(params) {
+						console.log("after route resolves");
+					}
+				});
+
+				Router.init();
+			})
+		}
+
+		onRequest(cmd, message) {
+			if (cmd == "setSiteInfo")
+				this.setSiteInfo(message.params)
+			else
+				this.log("Unknown incoming message:", cmd)
+			Router.listenForBack(cmd, message);
+		}
+	}
+	page = new Page()
+	</script>
+
+</body>
+</html>
