@@ -67,7 +67,7 @@ var Router = {
 	},
 	navigate: function(path) {
 		path = path ? path : '';
-		zeroframe.cmd('wrapperPushState', [{"route": path}, null, this.root + this.clearSlashes(path)]);
+		page.cmd('wrapperPushState', [{"route": path}, null, this.root + this.clearSlashes(path)]);
 		this.check(path);
 		return this;
 	}
