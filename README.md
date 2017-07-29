@@ -28,5 +28,5 @@ To navigate to a route, use the `Router.navigate('/route')` function.
 If you wan't to be able to easily create links that navigate to a router without having to type out a call to a function, you can use this vue component. Simply include the js file, after the vue js file AND router.js file, and use as such:
 
 ```html
-<route-link to="/" class="nav-item is-active">Home</route-link>
+<route-link to="/">Home</route-link>
 ```
