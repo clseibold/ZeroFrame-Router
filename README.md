@@ -7,6 +7,10 @@ Router.add(/about/, function () {
     console.log('about');
 }).add(/tutorials/, function() {
     console.log('tutorials')
+}).add(/products\/(.*)\/edit\/(.*)/, function() {
+    console.log('products', arguments);
+    // If you go to route: /products/21/edit/3
+    // It will log: ["21", "3", callee: function, Symbol(Symbol.iterator): function]
 }).add(function() {
     console.log('home');
 });
