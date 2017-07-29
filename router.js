@@ -36,7 +36,7 @@ var Router = {
 		this.root = '/';
 		return this;
 	},
-	check: function(f) {
+	check: function(hash) {
 		var reg, keys, match, routeParams;
 		for (var i = 0, max = this.routes.length; i < max; i++ ) {
 			routeParams = {}
