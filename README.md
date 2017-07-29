@@ -11,6 +11,8 @@ Router.add('about', function () {
     console.log('products', params.pid, params.eid);
     // If you go to route: /products/21/edit/3
     // It will log: products 21 3
+}).add('*/create', function() {
+    console.log('Wildcard example');
 }).add(function() {
     console.log('home');
 });

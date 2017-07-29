@@ -41,7 +41,7 @@ var Router = {
 		for (var i = 0, max = this.routes.length; i < max; i++ ) {
 			routeParams = {}
 			keys = this.routes[i].path.match(/:([^\/]+)/g);
-			match = hash.match(new RegExp(this.routes[i].path.replace(/:([^\/]+)/g, "([^\/]*)") + '(?:\/|$)'));
+			match = hash.match(new RegExp(this.routes[i].path.replace(/:([^\/]+)/g, "([^\/]*)").replace(/\*/g, '(?:.*)') + '(?:\/|$)'));
 			if (match) {
 				match.shift();
 				match.forEach(function (value, i) {
@@ -77,40 +77,3 @@ var Router = {
 Router.init = function() {
 	Router.check(Router.getURL());
 }
-
-/* Example Ussage
-  
-   Router.add(/about/, function () {
-		app.currentView = 'about';
-		app.heroIsMedium = false;
-		app.heroTitle = "About";
-		app.heroSubtitle = "";
-		app.heroContent = "";
-	}).add(/tutorials/, function() {
-		app.currentView = 'tutorials';
-		app.heroIsMedium = false;
-		app.heroTitle = "Tutorials";
-		app.heroSubtitle = "";
-		app.heroContent = "";
-	}).add(function() {
-		app.currentView = 'home';
-		app.heroIsMedium = true;
-		app.heroTitle = "ZeroNet Dev Center";
-		app.heroSubtitle = "Tutorials, Questions, Collaboration";
-		app.heroContent = '<a href="tutorials/?t=the_basics" class="button is-info">The Basics</a>\
-		<a href="tutorials/" style="margin-top: 10px; margin-left: 10px;">All Tutorials</a>';
-
-		zeroframe.cmd('dbQuery', ['SELECT * FROM tutorials'], (tutorials) => {
-			for (var i in tutorials) {
-				app.tutorialsList += "<a href='tutorials/?t=" + tutorials[i].slug + "'>" + tutorials[i].title + "</a><br>";
-			}
-			//this.cmd('wrapperPushState', [{}, '', '']);
-			app.tutorialsList += "Database Basics (Coming Soon)";
-		});
-	});
-	Router.init();
-    
-
-    You must also call Router.listenForBack() in the OnRequest function of your ZeroFrame class. This will detect when the
-    user hits the back button and navigate to the correct route.
- */
