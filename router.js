@@ -37,13 +37,17 @@ var Router = {
 		return this;
 	},
 	check: function(f) {
-		var url = f || this.getURL();
-		for (var i = 0; i < this.routes.length; i++) {
-			var match = url.match(this.routes[i].path);
+		var reg, keys, match, routeParams;
+		for (var i = 0, max = this.routes.length; i < max; i++ ) {
+			routeParams = {}
+			keys = this.routes[i].path.match(/:([^\/]+)/g);
+			match = hash.match(new RegExp(this.routes[i].path.replace(/:([^\/]+)/g, "([^\/]*)") + '(?:\/|$)'));
 			if (match) {
 				match.shift();
-				this.currentRoute = f;
-				this.routes[i].controller.apply({}, match);
+				match.forEach(function (value, i) {
+					routeParams[keys[i].replace(":", "")] = value;
+				});
+				this.routes[i].controller.call({}, routeParams);
 				return this;
 			}
 		}

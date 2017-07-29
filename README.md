@@ -3,14 +3,14 @@ A *very* basic router that works with the ZeroFrame API.
 
 ## Example Usage
 ```javascript
-Router.add(/about/, function () {
+Router.add('about', function () {
     console.log('about');
-}).add(/tutorials/, function() {
+}).add('tutorials', function() {
     console.log('tutorials')
-}).add(/products\/(.*)\/edit\/(.*)/, function() {
-    console.log('products', arguments);
+}).add('products/:pid/edit/:eid', function(params) {
+    console.log('products', params.pid, params.eid);
     // If you go to route: /products/21/edit/3
-    // It will log: ["21", "3", callee: function, Symbol(Symbol.iterator): function]
+    // It will log: products 21 3
 }).add(function() {
     console.log('home');
 });
