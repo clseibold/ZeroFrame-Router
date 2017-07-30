@@ -1,5 +1,6 @@
 # ZeroFrame Router
 A *very* basic router that works with the ZeroFrame API.
+License: BSD 2-Clause
 
 ## Example Usage
 ```javascript
