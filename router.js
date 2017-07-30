@@ -90,6 +90,7 @@ var Router = {
 	},
 	hooks: function(hooks) {
 		this.hooks = hooks;
+		return this;
 	}
 }
 
