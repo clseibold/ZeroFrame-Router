@@ -70,14 +70,14 @@ Let's say you want to set a variable in the `before` hook and access it in the r
 
 ```javascript
 Route.add('about', function(params) {
-    console.log(this.testvariable, " works in here!");
+    console.log(this.testvariable, " works in here!"); // Use the variable here.
 }, {
     before: function(params) {
-        this.testvariable = "Test Variable";
+        this.testvariable = "Test Variable"; // Set the variable here!
         return true;
     },
     after: function() {
-        console.log(this.testvariable, " also works in here!");
+        console.log(this.testvariable, " also works in here!"); // Use the variable here also.
     }
 });
 ```
