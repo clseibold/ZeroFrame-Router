@@ -65,6 +65,25 @@ The order in which you add routes matters. The URL which is added earlier and ma
 
 *Credit*: Library based on code from this tutorial: [http://krasimirtsonev.com/blog/article/A-modern-JavaScript-router-in-100-lines-history-api-pushState-hash-url](http://krasimirtsonev.com/blog/article/A-modern-JavaScript-router-in-100-lines-history-api-pushState-hash-url)
 
+## Sharing Variables Between A Route's Function And Its Hooks
+Let's say you want to set a variable in the `before` hook and access it in the route's main function. You can do this simply by setting the variable on `this`. Here's an example:
+
+```javascript
+Route.add('about', function(params) {
+    console.log(this.testvariable, " works in here!");
+}, {
+    before: function(params) {
+        this.testvariable = "Test Variable";
+        return true;
+    },
+    after: function() {
+        console.log(this.testvariable, " also works in here!");
+    }
+});
+```
+
+It should be noted that this also applies to global hooks.
+
 ## What Happens When `navigate` Is Called?
 This is exactly what happens when you call the `navigate` function:
 * Call Global `leave` hook

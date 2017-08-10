@@ -50,16 +50,17 @@ var Router = {
 				match.forEach(function (value, i) {
 					routeParams[keys[i].replace(":", "")] = value;
 				});
+				var variables = {};
 				// Call 'before' hook
 				if (this.hookFunctions && this.hookFunctions["before"]) { // TODO: Move this into navigate function?
-					if (!this.hookFunctions["before"].call({}, this.routes[i].path, routeParams)) {
+					if (!this.hookFunctions["before"].call(variables, this.routes[i].path, routeParams)) {
 						page.cmd('wrapperPushState', [{"route": this.currentRoute}, null, this.root + this.clearSlashes(this.currentRoute)]);
 						return this;
 					}
 				}
 				// Call route-specific 'before' hook
 				if (this.routes[i].hooks && this.routes[i].hooks["before"]) {
-					if (!this.routes[i].hooks["before"].call({}, routeParams)) {
+					if (!this.routes[i].hooks["before"].call(variables, routeParams)) {
 						page.cmd('wrapperPushState', [{"route": this.currentRoute}, null, this.root + this.clearSlashes(this.currentRoute)]);
 						return this;
 					}
@@ -69,11 +70,11 @@ var Router = {
 				this.routes[i].controller.call({}, routeParams);
 				// Call route-specific 'after' hook
 				if (this.routes[i].hooks) {
-					this.routes[i].hooks["after"].call({}, routeParams);
+					this.routes[i].hooks["after"].call(variables, routeParams);
 				}
 				if (this.hookFunctions) {
 					if (this.hookFunctions["after"]) {
-						this.hookFunctions["after"].call({}, this.currentRoute, routeParams);
+						this.hookFunctions["after"].call(variables, this.currentRoute, routeParams);
 					}
 				}
 				return this;
