@@ -2,7 +2,8 @@ var Router = {
 	routes: [],
 	currentRoute: '',
 	root: '/',
-	hooks: null, // hooks that are called for each route, functions for 'before' and 'after'.
+	notFoundFunction: null,
+	hookFunctions: {}, // hooks that are called for each route, functions for 'before' and 'after'.
 	config: function(options) {
 		this.root = options && options.root ? '/' + this.clearSlashes(options.root) + '/' : '/';
 		return this;
@@ -15,12 +16,13 @@ var Router = {
 	clearSlashes: function(path) {
 		return path.toString().replace(/\/$/, '').replace(/^\//, '');
 	},
-	add: function(path, controller) {
+	add: function(path, controller, hooks) {
 		if (typeof path == 'function') {
+			hooks = controller;
 			controller = path;
 			path = '';
 		}
-		this.routes.push({ path: path, controller: controller });
+		this.routes.push({ path: path, controller: controller, hooks: hooks });
 		return this;
 	},
 	remove: function(param) {
@@ -48,8 +50,16 @@ var Router = {
 				match.forEach(function (value, i) {
 					routeParams[keys[i].replace(":", "")] = value;
 				});
-				if (this.hooks) { // TODO: Move this into navigate function?
-					if (this.hooks["before"] && !this.hooks["before"].call({}, this.routes[i].path, routeParams)) {
+				// Call 'before' hook
+				if (this.hookFunctions && this.hookFunctions["before"]) { // TODO: Move this into navigate function?
+					if (!this.hookFunctions["before"].call({}, this.routes[i].path, routeParams)) {
+						page.cmd('wrapperPushState', [{"route": this.currentRoute}, null, this.root + this.clearSlashes(this.currentRoute)]);
+						return this;
+					}
+				}
+				// Call route-specific 'before' hook
+				if (this.routes[i].hooks && this.routes[i].hooks["before"]) {
+					if (!this.routes[i].hooks["before"].call({}, routeParams)) {
 						page.cmd('wrapperPushState', [{"route": this.currentRoute}, null, this.root + this.clearSlashes(this.currentRoute)]);
 						return this;
 					}
@@ -57,9 +67,13 @@ var Router = {
 				this.currentRoute = this.routes[i].path;
 				window.scroll(window.pageXOffset, 0);
 				this.routes[i].controller.call({}, routeParams);
-				if (this.hooks) {
-					if (this.hooks["after"]) {
-						this.hooks["after"].call({}, this.currentRoute, routeParams);
+				// Call route-specific 'after' hook
+				if (this.routes[i].hooks) {
+					this.routes[i].hooks["after"].call({}, routeParams);
+				}
+				if (this.hookFunctions) {
+					if (this.hookFunctions["after"]) {
+						this.hookFunctions["after"].call({}, this.currentRoute, routeParams);
 					}
 				}
 				return this;
@@ -83,13 +97,28 @@ var Router = {
 		}
 	},
 	navigate: function(path) {
+		var previousRoute = this.currentRoute;
+		// TODO: Call route-specific 'leave' hook
+		// Call global 'leave' hook
+		if (this.hookFunctions && this.hookFunctions["leave"]) {
+			if (!this.hookFunctions["leave"].call({}, previousRoute)) {
+				return this;
+			}
+		}
+
 		path = path ? path : '';
 		page.cmd('wrapperPushState', [{"route": path}, null, this.root + this.clearSlashes(path)]);
 		this.check(path);
 		return this;
 	},
-	hooks: function(hooks) {
-		this.hooks = hooks;
+	hooks: function(hookFunctions) { // TODO: Check if using correct format?
+		this.hookFunctions = hookFunctions;
+		return this;
+	},
+	notFound: function(f) {
+		if (f && typeof f === 'function') {
+			this.notFoundFunction = f;
+		}
 		return this;
 	}
 }
@@ -103,7 +132,7 @@ Router.init = function() {
 // Example:
 //   content += generateRouteLinkHTML('tutorials/' + tutorial.slug, tutorial.name, 'button is-info', 'margin-left: 30px;') + "<br>";
 function generateRouteLinkHTML(to, display, tagClass = "", tagStyle = "") {
-	var link = '<a onclick="Router.navigate(\'' + to + '\')"';
+	var link = '<a href="./?/' + to + '" onclick="Router.navigate(\'' + to + '\'); event.preventDefault();"';
 	if (tagClass && tagClass != "") {
 		link += ' class="' + tagClass + '"';
 	}
