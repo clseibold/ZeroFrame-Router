@@ -136,6 +136,12 @@ template: `
 
 Notice that `currentView` is bound to `is` on the `component` tag. ZeroMedium also binds things to this component that will be accessed by *many* of the routes and is often global data, like the current user's information, for example.
 
+To make sure the back button works properly, you must add this within your ZeroFrame class's `onRequest` function:
+
+```javascript
+Router.listenForBack(cmd, message);
+```
+
 ### Adding Routes with the Plugin
 The Vue plugin has a different way of managing the routes. Also, your vuejs components' `mounted`, `beforeMount`, and `afterMount` should be used instead of the router's hooks (this is detailed more below.
 
