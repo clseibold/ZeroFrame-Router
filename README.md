@@ -274,3 +274,5 @@ beforeMount: function() {
 ```
 
 ZeroMedium gets the `userauthaddress` that was passed in within the `beforeMount` function so it can start getting the user's profile information (by calling `page.getUserProfileInfo()`) before the route's Vue component is mounted. Because a function is passed into `getUserProfileInfo`, it uses `var that = this` to be able to reference `this` as `that` from within the callback function. This callback function is called once the profile information has been gathered. The callback function then sets the Vue component's `profileInfo` data to that which was given to the function. *This is done this way because the `getUserProfileInfo` function is async.*
+
+You can find an example of how this Router, Vue, and ZeroFrame are used together in a medium-sized project on [ZeroMedium's GitHub page](https://github.com/krixano/ZeroMedium).
