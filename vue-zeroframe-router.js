@@ -1,5 +1,7 @@
 //export default MyPlugin;
 
+var Router = require("./router.js");
+
 const VueRouteLink =  {
 	props: ['to'],
 	template: '<a v-bind:href="getHref" v-on:click.prevent="goto" v-bind:class="{ \'is-active\': active }"><slot></slot></a>',
